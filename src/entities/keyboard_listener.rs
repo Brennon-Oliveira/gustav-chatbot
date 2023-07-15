@@ -1,23 +1,25 @@
+
 use gtk::prelude::*;
 use gtk::Entry as GtkEntry;
 use crate::constants::ENTER;
 
 
-pub trait TextTypedObeserver {
+pub trait TextTypedObserver {
     fn update(&self, text: &str);
 }
 
 pub struct KeyboardListener<'a>{
-    input: &'a GtkEntry,
-    observers: Vec<Box<dyn TextTypedObeserver + 'a>>
+    observers: Vec<Box<dyn TextTypedObserver + 'a>>
 }
 
 impl<'a> KeyboardListener<'a>{
-    pub fn new(input: &'a GtkEntry)->Self{
-        KeyboardListener { input, observers: Vec::new() }
+    pub fn new()->Self{
+        let  keyboard_listener = KeyboardListener { observers: Vec::new() };
+
+        return keyboard_listener;
     }
 
-    pub fn subscribe(&mut self, observer: Box<dyn TextTypedObeserver + 'a>){
+    pub fn subscribe(&mut self, observer: Box<dyn TextTypedObserver + 'a>){
         self.observers.push(observer);
     }
 
@@ -26,16 +28,4 @@ impl<'a> KeyboardListener<'a>{
             observer.update(text);
         }
     }
-}
-
-pub fn create_keyboard_listener(input: &GtkEntry){
-
-    input.connect_key_press_event(|_, event| {
-        let key = event.keyval();
-        // if(key. == ENTER){
-            
-        // }
-        println!("Tecla pressionada: {:?}", key);
-        Inhibit(false)
-    });
 }
