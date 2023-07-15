@@ -12,7 +12,7 @@ use enums::actor::Actor;
 use entities::window::{create_window, create_divisor, show_window};
 use entities::chat::create_chat;
 use entities::prompt_input::create_prompt_input;
-use entities::keyboard_listener::KeyboardListener;
+use entities::keyboard_listener::create_keyboard_listener;
 
 fn main() {
     gtk::init().expect("Failed to initialize GTK.");
@@ -25,17 +25,10 @@ fn main() {
     
     let prompt_input = create_prompt_input(&main_container);
 
-    let keyboard_listener = Arc::new(Mutex::new(KeyboardListener::new()));
-let robot = Robot::new();
-keyboard_listener.lock().unwrap().subscribe(Box::new(robot));
+    let keyboard_listener = create_keyboard_listener(&prompt_input);
+    let robot = Robot::new();
 
-let kl_clone = Arc::clone(&keyboard_listener);
-prompt_input.connect_key_press_event(move |_, event| {
-    let key = event.keyval();
-    kl_clone.lock().unwrap().notify(&key.to_string());
-    println!("Tecla pressionada: {:?}", key);
-    Inhibit(false)
-});
+    keyboard_listener.lock().unwrap().subscribe(Box::new(robot));
 
 
     createMessage(&chat_container, Actor::Bot, String::from("Olá humano"));
