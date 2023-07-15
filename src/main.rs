@@ -1,16 +1,13 @@
 extern crate gtk;
-use std::sync::{Arc, Mutex};
 
 use gtk::prelude::*;
 mod enums;
-mod components;
 mod entities;
 mod constants;
-use components::message::createMessage;
 use entities::robot::Robot;
 use enums::actor::Actor;
 use entities::window::{create_window, create_divisor, show_window};
-use entities::chat::create_chat;
+use entities::chat::Chat;
 use entities::prompt_input::create_prompt_input;
 use entities::keyboard_listener::create_keyboard_listener;
 
@@ -19,22 +16,19 @@ fn main() {
 
     let (window, main_container) = create_window();  
 
-    let chat_container = create_chat(&main_container); 
-    
+    let chat_container= Chat::new(&main_container); 
+
     create_divisor(&main_container);   
     
     let prompt_input = create_prompt_input(&main_container);
 
-    let keyboard_listener = create_keyboard_listener(&prompt_input);
+    let keyboard_listener = create_keyboard_listener(&prompt_input, window.clone());
     let robot = Robot::new();
 
+    keyboard_listener.lock().unwrap().subscribe(Box::new(chat_container));
     keyboard_listener.lock().unwrap().subscribe(Box::new(robot));
 
-
-    createMessage(&chat_container, Actor::Bot, String::from("Olá humano"));
-    createMessage(&chat_container, Actor::User, String::from("Olá Robô"));    
-
-    show_window(&window, &main_container);
+    show_window(window, &main_container);
 
     gtk::main();
 }

@@ -13,7 +13,7 @@ impl Robot {
 }
 
 impl TextTypedObserver for Robot {
-    fn update(&self, text: &str) {
+    fn update(&mut self, text: &str) {
         self.answer_this(text);
     }
 }

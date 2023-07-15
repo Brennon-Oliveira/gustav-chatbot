@@ -1,5 +1,4 @@
-
-
+use std::sync::{Arc, Mutex};
 use gtk::prelude::*;
 use gtk::{Box, Window, WindowType};
 
@@ -8,11 +7,11 @@ fn create_main_container() -> Box{
     return Box::new(gtk::Orientation::Vertical, 5);
 }
 
-pub fn create_window() -> (Window, Box){
-    let window: Window= Window::new(WindowType::Toplevel);
-    window.set_title("Gustav");
-    window.set_default_size(720, 1080);
-    window.connect_delete_event(|_, _| {
+pub fn create_window() -> (Arc<Mutex<Window>>, Box){
+    let window: Arc<Mutex<Window>>= Arc::new(Mutex::new(Window::new(WindowType::Toplevel)));
+    window.lock().unwrap().set_title("Gustav");
+    window.lock().unwrap().set_default_size(720, 1080);
+    window.lock().unwrap().connect_delete_event(|_, _| {
         gtk::main_quit();
         Inhibit(false)
     });
@@ -27,7 +26,7 @@ pub fn create_divisor(main_container: &Box){
     main_container.add(&spacer);
 }
 
-pub fn show_window(window: &Window, main_container: &Box){
-    window.add(main_container);
-    window.show_all();
+pub fn show_window(window: Arc<Mutex<Window>>, main_container: &Box){
+    window.lock().unwrap().add(main_container);
+    window.lock().unwrap().show_all();
 }

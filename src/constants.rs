@@ -1,2 +1,2 @@
-pub const ENTER: i32 = 65293;
+pub const ENTER: u16 = 36;
  
