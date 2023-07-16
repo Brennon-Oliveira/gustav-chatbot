@@ -13,8 +13,25 @@ impl Robot {
         }
     }
 
+    fn getResponse(question: &str)->&str{
+        if(question == "Olá"){
+            return "Olá, tudo bem?";
+        }
+        if(question == "Tudo bem"){
+            return "Que bom!";
+        }
+        if(question == "Qual o seu nome?"){
+            return "Meu nome é Gustav";
+        }
+        if(question == "O que você faz?"){
+            return "Eu sou um robô";
+        }
+        return "Não entendi, desculpe";
+    }
+
     fn answer_this(&mut self, question: &str){
-        &mut self.chat.lock().unwrap().add_message(Actor::Bot, format!("You said: {}", question));
+        let response = String::from(Robot::getResponse(question));
+        &mut self.chat.lock().unwrap().add_message(Actor::Bot, response);
     }
 }
 
