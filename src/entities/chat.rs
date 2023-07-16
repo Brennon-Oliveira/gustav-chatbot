@@ -53,9 +53,9 @@ impl Chat {
     
 }
 
-impl TextTypedObserver for Chat {
+impl TextTypedObserver for Arc<Mutex<Chat>> {
     fn update(&mut self, text: &str) {
-        self.add_message(Actor::User, String::from(text));
+        self.lock().unwrap().add_message(Actor::User, String::from(text));
     }
 }
 
